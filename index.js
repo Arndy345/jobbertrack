@@ -8,11 +8,10 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
 const auth = require("./middleware/authentication");
 // extra security packages
-const helmet = require('helmet');
-const cors = require('cors');
-const xss = require('xss-clean');
-const rateLimiter = require('express-rate-limit');
-
+const helmet = require("helmet");
+const cors = require("cors");
+const xss = require("xss-clean");
+const rateLimiter = require("express-rate-limit");
 
 app.set("trust proxy", 1);
 app.use(
@@ -29,9 +28,7 @@ app.use(xss());
 app.use("/api/v1/auth", userRoute);
 app.use("/api/v1", auth, jobsRoute);
 app.get("/", async (req, res) => {
-	const user = await User.find({});
-
-	res.status(200).json(user);
+	res.status(200).end("Welcome to job api");
 });
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
