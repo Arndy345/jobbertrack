@@ -12,6 +12,12 @@ const helmet = require("helmet");
 const cors = require("cors");
 const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yamljs");
+
+const swaggerDocument = YAML.load(
+	"./jobbertrack.yaml"
+);
 
 app.set("trust proxy", 1);
 app.use(
@@ -28,8 +34,17 @@ app.use(xss());
 app.use("/api/v1/auth", userRoute);
 app.use("/api/v1", auth, jobsRoute);
 app.get("/", async (req, res) => {
-	res.status(200).end("Welcome to job api");
+	res.send(
+		"<h1 style='color: black;text-align: center'>Welcome to <span style='color: green'>Jobbertrack</span>!</h1>\
+     <br> <h3 style='color: black;text-align: center'>Click <a href='/api-docs'>here</a> to get started</h3>"
+	);
+	next();
 });
+app.use(
+	"/api-docs",
+	swaggerUI.serve,
+	swaggerUI.setup(swaggerDocument)
+);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

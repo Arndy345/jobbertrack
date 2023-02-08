@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  title: JOBS API
+  contact: {}
+  version: '1.0'
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+- url: https://jobbertrack.onrender.com/api/v1
+  variables: {}
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Misc
+      summary: LOGIN
+      operationId: LOGIN
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LOGINREQUEST'
+              - examples:
+                - email: andy201@gmail.com
+                  name: Nono
+                  password: password
+              contentMediaType: application/json
+            example:
+              email: andy201@gmail.com
+              password: password
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+  /auth/signup:
+    post:
+      tags:
+      - Misc
+      summary: SIGNUP
+      operationId: SIGNUP
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LOGINREQUEST'
+              - examples:
+                - email: andy201@gmail.com
+                  name: Nono
+                  password: password
+              contentMediaType: application/json
+            example:
+              email: andy201@gmail.com
+              name: Nono
+              password: password
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+  /jobs:
+    get:
+      tags:
+      - AUTHENTICATED ROUTES
+      summary: GET ALL JOBS
+      operationId: GETALLJOBS
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - AUTHENTICATED ROUTES
+      summary: POST JOBS
+      operationId: POSTJOBS
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/POSTJOBSREQUEST'
+              - examples:
+                - company: Twitter
+                  position: Backend Intern
+              contentMediaType: application/json
+            example:
+              company: Twitter
+              position: Backend Intern
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    parameters: []
+  /jobs/{id}:
+    sparameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: string ID of the job to get
+    get:
+      tags:
+      - AUTHENTICATED ROUTES
+      summary: GET SINGLE JOB
+      operationId: GETSINGLEJOB
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    parameters: []
+    patch:
+      tags:
+      - AUTHENTICATED ROUTES
+      summary: UPDATE SINGLE JOB
+      operationId: UPDATESINGLEJOB
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+    delete:
+      tags:
+      - AUTHENTICATED ROUTES
+      summary: DELETE SINGLE JOB
+      operationId: DELETESINGLEJOB
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+components:
+  schemas:
+    LOGINREQUEST:
+      title: LOGINREQUEST
+      required:
+      - email
+      - name
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+      examples:
+      - email: andy201@gmail.com
+        name: Nono
+        password: password
+    POSTJOBSREQUEST:
+      title: POSTJOBSREQUEST
+      required:
+      - company
+      - position
+      type: object
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+      examples:
+      - company: Twitter
+        position: Backend Intern
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: Misc
+  description: ''
+- name: AUTHENTICATED ROUTES
+  description: ''
