@@ -22,7 +22,6 @@ const auth = async (req, res, next) => {
 			id: payload.userId,
 			email: payload.email,
 		};
-
 		next();
 	} catch (err) {
 		throw new authenticationError(
