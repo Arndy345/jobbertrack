@@ -9,11 +9,9 @@ const User = require("./models/user");
 // 	};
 const resolvers = {
 	getUser: async (
-		parentValue,
 		args,
-		{ user }
+		{id}
 	) => {
-		console.log("here", user);
 		try {
 			const user = await User.findOne({
 				_id: id,
@@ -49,12 +47,12 @@ const resolvers = {
 			throw new Error("Error creating user");
 		}
 	},
-	updateUser: async ({
-		id,
-		name,
-		email,
-		password,
-	}) => {
+	updateUser: async (args,{id}) => {
+		const {
+			name,
+			email,
+			password,	
+		}= args
 		let body = {};
 		name ? (body.name = name) : "";
 		email ? (body.email = email) : "";
@@ -71,7 +69,7 @@ const resolvers = {
 			throw new Error("Error updating user");
 		}
 	},
-	deleteUser: async ({ id }) => {
+	deleteUser: async (args,{ id }) => {
 		try {
 			const user = await User.findOneAndDelete({
 				_id: id,

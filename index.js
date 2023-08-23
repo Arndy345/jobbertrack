@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const User = require("./models/user");
+const authenticationError = require("./errors/unauthenticated");
+const jwt = require("jsonwebtoken");
 
 const userRoute = require("./routes/User");
 const jobsRoute = require("./routes/Job");
@@ -43,7 +45,6 @@ app.use(xss());
 
 const auth = async (req) => {
 	const authHeader = req.headers.authorization;
-
 	if (
 		!authHeader ||
 		!authHeader.startsWith("Bearer")
@@ -58,7 +59,6 @@ const auth = async (req) => {
 			token,
 			process.env.JWT_SECRET
 		);
-		// console.log(payload);
 		const user = {
 			id: payload.userId,
 			email: payload.email,
@@ -74,14 +74,15 @@ const auth = async (req) => {
 app.use(
 	"/graphql",
 	// auth,
-	graphqlHTTP(() => ({
+	graphqlHTTP(async(req) => ({
 		schema: schema,
 		rootValue: resolvers,
 		graphiql: true,
-		context: async ({ req }) => {
-			const user = await auth(req);
-			console.log(user);
-		},
+		context: await auth(req)
+		// async () => {
+		// 	const user = await auth(req);
+		// 	return user
+		// },
 	}))
 );
 // app.use("/api/v1/auth", userRoute);
