@@ -9,7 +9,7 @@ const jobsRoute = require("./routes/Job");
 require("express-async-errors");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
-// const auth = require("./middleware/authentication");
+const auth = require("./middleware/authentication");
 // extra security packages
 const helmet = require("helmet");
 const cors = require("cors");
@@ -43,50 +43,44 @@ app.use(xss());
 // app.use(auth); // Apply authentication middleware
 // get the user info from a JWT
 
-const auth = async (req) => {
-	const authHeader = req.headers.authorization;
-	if (
-		!authHeader ||
-		!authHeader.startsWith("Bearer")
-	) {
-		throw new authenticationError(
-			"Invalid authentication"
-		);
-	}
-	const token = authHeader.split(" ")[1];
-	try {
-		const payload = jwt.verify(
-			token,
-			process.env.JWT_SECRET
-		);
-		const user = {
-			id: payload.userId,
-			email: payload.email,
-		};
-		return user;
-	} catch (err) {
-		throw new authenticationError(
-			"Invalid authentication"
-		);
-	}
-};
+// const auth = async (req) => {
+// 	const authHeader = req.headers.authorization;
+// 	if (
+// 		!authHeader ||
+// 		!authHeader.startsWith("Bearer")
+// 	) {
+// 		throw new authenticationError(
+// 			"Invalid authentication"
+// 		);
+// 	}
+// 	const token = authHeader.split(" ")[1];
+// 	try {
+// 		const payload = jwt.verify(
+// 			token,
+// 			process.env.JWT_SECRET
+// 		);
+// 		const user = {
+// 			id: payload.userId,
+// 			email: payload.email,
+// 		};
+// 		return user;
+// 	} catch (err) {
+// 		throw new authenticationError(
+// 			"Invalid authentication"
+// 		);
+// 	}
+// };
 
 app.use(
 	"/graphql",
-	// auth,
-	graphqlHTTP(async(req) => ({
+	graphqlHTTP(async (req) => ({
 		schema: schema,
 		rootValue: resolvers,
 		graphiql: true,
-		context: await auth(req)
-		// async () => {
-		// 	const user = await auth(req);
-		// 	return user
-		// },
+		context: await auth(req),
 	}))
 );
-// app.use("/api/v1/auth", userRoute);
-// app.use("/api/v1", auth, jobsRoute);
+
 // app.get("/", async (req, res) => {
 // 	res.send(
 // 		"<h1 style='color: black;text-align: center'>Welcome to <span style='color: green'>Jobbertrack</span>!</h1>\

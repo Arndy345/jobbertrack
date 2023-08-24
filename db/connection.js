@@ -16,8 +16,7 @@ const connect = () => {
 		})
 		.catch((err) => {
 			console.log(
-				err.MongooseServerSelectionError,
-				"here"
+				err.MongooseServerSelectionError
 			);
 		});
 };

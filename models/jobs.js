@@ -8,10 +8,10 @@ const jobSchema = new Schema(
 		status: {
 			type: String,
 			required: true,
-			enum: ["pending", "interview", "declined"],
-			default: "pending",
+			enum: ["PENDING", "INTERVIEW", "DECLINED"],
+			default: "PENDING",
 		},
-		createdBy: {
+		user: {
 			type: mongoose.Types.ObjectId,
 			ref: "User",
 			required: [true, "Please provide user"],

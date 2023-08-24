@@ -24,6 +24,12 @@ const userSchema = new Schema({
 		required: [true, "Provide password"],
 		minlength: [6, "Password too short"],
 	},
+	jobs: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "Job",
+		},
+	],
 });
 
 // Encrypt password before saving to the database

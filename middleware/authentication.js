@@ -1,6 +1,6 @@
 const authenticationError = require("../errors/unauthenticated");
 const jwt = require("jsonwebtoken");
-const auth = async (req, res, next) => {
+const auth = async (req) => {
 	const authHeader = req.headers.authorization;
 
 	if (
@@ -17,12 +17,11 @@ const auth = async (req, res, next) => {
 			token,
 			process.env.JWT_SECRET
 		);
-		// console.log(payload);
-		req.user = {
+		const user = {
 			id: payload.userId,
 			email: payload.email,
 		};
-		next();
+		return user;
 	} catch (err) {
 		throw new authenticationError(
 			"Invalid authentication"
