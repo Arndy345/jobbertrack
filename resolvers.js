@@ -5,8 +5,10 @@ const {
 	BadRequestError,
 	UnauthenticatedError,
 } = require("./errors");
+const getToken = require("./middleware/authentication");
+
 const resolvers = {
-	getUser: async (args, { id }) => {
+	getUser: async ({ id }) => {
 		try {
 			const user = await User.findOne({
 				_id: id,
@@ -36,14 +38,16 @@ const resolvers = {
 				email,
 				password,
 			});
+
 			const token = await user.createToken();
 			return { token };
 		} catch (err) {
-			throw new Error("Error creating user");
+			throw new Error(err.message);
 		}
 	},
-	updateUser: async (args, { id }) => {
+	updateUser: async (args, context) => {
 		const { name, email, password } = args;
+		const { id } = await getToken(context);
 		let body = {};
 		name ? (body.name = name) : "";
 		email ? (body.email = email) : "";
@@ -57,10 +61,11 @@ const resolvers = {
 			);
 			return user;
 		} catch (err) {
-			throw new Error("Error updating user");
+			throw new Error(err);
 		}
 	},
-	deleteUser: async (args, { id }) => {
+	deleteUser: async (args, context) => {
+		const { id } = await getToken(context);
 		const { password } = args;
 		try {
 			const user = await User.findOne({
@@ -76,7 +81,7 @@ const resolvers = {
 			user.remove();
 			return user;
 		} catch (err) {
-			throw new Error("Error deleting user");
+			throw new Error(err);
 		}
 	},
 	login: async ({ email, password }, context) => {
@@ -84,14 +89,20 @@ const resolvers = {
 		const token = await auth.login(userDetails);
 		return { token };
 	},
-	createJob: async (args, { id }) => {
+	createJob: async (args, context) => {
+		const { id } = await getToken(context);
 		args.user = id;
-		const job = await Job.create(args);
-		return job;
+		try {
+			const job = await Job.create(args);
+			return job;
+		} catch (err) {
+			throw new Error(err);
+		}
 	},
 
-	getJob: async (args, { id }) => {
+	getJob: async (args, context) => {
 		const { jobId } = args;
+		const { id } = await getToken(context);
 		try {
 			const job = await Job.findOne({
 				user: id,
@@ -101,13 +112,18 @@ const resolvers = {
 		} catch (error) {}
 	},
 
-	getJobs: async (args, { id }) => {
+	getJobs: async (args, context) => {
+		const { id } = await getToken(context);
+
 		try {
 			const jobs = await Job.find({ user: id });
 			return jobs;
-		} catch (error) {}
+		} catch (error) {
+			throw new Error(error);
+		}
 	},
-	updateJob: async (args, { id }) => {
+	updateJob: async (args, context) => {
+		const { id } = await getToken(context);
 		let body = {};
 		const { jobId, status } = args;
 		body.status = status;
@@ -121,21 +137,26 @@ const resolvers = {
 				{ new: true }
 			);
 			return jobs;
-		} catch (error) {}
+		} catch (error) {
+			throw new Error(error);
+		}
 	},
-	deleteJob: async (args, { id }) => {
+	deleteJob: async (args, context) => {
+		const { id } = await getToken(context);
 		const { password, jobId } = args;
-		console.log(args);
 		try {
-			const job = await job.findOne({
+			const job = await Job.findOne({
 				_id: jobId,
 				user: id,
 			});
-			console.log(job);
+			if (!job) {
+				throw new UnauthenticatedError(
+					"Job not found"
+				);
+			}
 			const user = await User.findOne({
 				_id: id,
 			});
-			console.log(user);
 			const checkPassword =
 				await user.comparePasswords(password);
 			if (!checkPassword) {
@@ -143,11 +164,10 @@ const resolvers = {
 					"Wrong password"
 				);
 			}
-			console.log(job);
 			await job.remove();
-			return job;
+			return "Deleted Successfully";
 		} catch (err) {
-			throw new Error("Error deleting Job");
+			throw new Error(err);
 		}
 	},
 };

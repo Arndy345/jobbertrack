@@ -23,26 +23,21 @@ const schema = buildSchema(`
 
 
   type Query {
-    getUser: User
+    getUser(id:String!): User
     getUsers: [User!]
     getJobs: [Job!]
     getJob(jobId:String!): Job
   }
-   type SignInResponse {
-    token: String
-    error: String
-  }
- 
-   type SignUpResponse {
+   type AuthPayload {
     token: String
     error: String
   }
 
   type Mutation {
-    createUser(name: String!, email: String!, password: String!): SignUpResponse
+    createUser(name: String!, email: String!, password: String!): AuthPayload
     updateUser(name: String, email: String, password: String): User
     deleteUser(password:String!): User
-    login(email: String!, password: String!): SignInResponse
+    login(email: String!, password: String!): AuthPayload
     createJob(company:String!, position:String!, status:String): Job
     updateJob(jobId:String!, status:String!):Job
     deleteJob(jobId:String!, password:String!):Job

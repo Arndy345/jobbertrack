@@ -13,7 +13,7 @@ const userSchema = new Schema({
 		required: [true, "Provide email"],
 		// This value can either be `true` to use the default error
 		// message or a non-empty string to use a custom one.
-		unique: true,
+		unique: [true, "Email already in use"],
 		match: [
 			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 			"Please provide a valid email",
@@ -22,7 +22,7 @@ const userSchema = new Schema({
 	password: {
 		type: String,
 		required: [true, "Provide password"],
-		minlength: [6, "Password too short"],
+		minlength: [6, "Password too short, min of 6 digits"],
 	},
 	jobs: [
 		{

@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
-const User = require("./models/user");
-const authenticationError = require("./errors/unauthenticated");
-const jwt = require("jsonwebtoken");
+// const User = require("./models/user");
+// const authenticationError = require("./errors/unauthenticated");
+// const jwt = require("jsonwebtoken");
 
-const userRoute = require("./routes/User");
-const jobsRoute = require("./routes/Job");
-require("express-async-errors");
+// const userRoute = require("./routes/User");
+// const jobsRoute = require("./routes/Job");
+// require("express-async-errors");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
 const auth = require("./middleware/authentication");
@@ -15,16 +15,16 @@ const helmet = require("helmet");
 const cors = require("cors");
 const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
-const swaggerUI = require("swagger-ui-express");
+// const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const schema = require("./schema");
 const resolvers = require("./resolvers");
 const {
 	graphqlHTTP,
 } = require("express-graphql");
-const swaggerDocument = YAML.load(
-	"./jobbertrack.yaml"
-);
+// const swaggerDocument = YAML.load(
+// 	"./jobbertrack.yaml"
+// );
 const expressPlayground =
 	require("graphql-playground-middleware-express").default;
 
@@ -77,7 +77,7 @@ app.use(
 		schema: schema,
 		rootValue: resolvers,
 		graphiql: true,
-		context: await auth(req),
+		context: req,
 	}))
 );
 
